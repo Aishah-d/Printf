@@ -12,7 +12,7 @@
  * Return: Number of chars printed.
  */
 int print_pointer(va_list types, char buffer[],
-int flags, int width, int precision, int size)
+	int flags, int width, int precision, int size)
 {
 	char extra_c = 0, padd = ' ';
 	int ind = BUFF_SIZE - 2, length = 2, padd_start = 1; /* length=2, for '0x' */
@@ -24,7 +24,7 @@ int flags, int width, int precision, int size)
 	UNUSED(size);
 
 	if (addrs == NULL)
-	return (write(1, "(nil)", 5));
+		return (write(1, "(nil)", 5));
 
 	buffer[BUFF_SIZE - 1] = '\0';
 	UNUSED(precision);
@@ -33,20 +33,23 @@ int flags, int width, int precision, int size)
 
 	while (num_addrs > 0)
 	{
-	buffer[ind--] = map_to[num_addrs % 16];
-	num_addrs /= 16;
-	length++;
+		buffer[ind--] = map_to[num_addrs % 16];
+		num_addrs /= 16;
+		length++;
 	}
+
 	if ((flags & F_ZERO) && !(flags & F_MINUS))
-	padd = '0';
+		padd = '0';
 	if (flags & F_PLUS)
-	extra_c = '+', length++;
+		extra_c = '+', length++;
 	else if (flags & F_SPACE)
-	extra_c = ' ', length++;
+		extra_c = ' ', length++;
+
 	ind++;
+
 	/*return (write(1, &buffer[i], BUFF_SIZE - i - 1));*/
 	return (write_pointer(buffer, ind, length,
-	width, flags, padd, extra_c, padd_start));
+		width, flags, padd, extra_c, padd_start));
 }
 
 /************************* PRINT NON PRINTABLE *************************/
@@ -61,7 +64,7 @@ int flags, int width, int precision, int size)
  * Return: Number of chars printed
  */
 int print_non_printable(va_list types, char buffer[],
-int flags, int width, int precision, int size)
+	int flags, int width, int precision, int size)
 {
 	int i = 0, offset = 0;
 	char *str = va_arg(types, char *);
@@ -72,16 +75,20 @@ int flags, int width, int precision, int size)
 	UNUSED(size);
 
 	if (str == NULL)
-	return (write(1, "(null)", 6));
+		return (write(1, "(null)", 6));
+
 	while (str[i] != '\0')
 	{
-	if (is_printable(str[i]))
-	buffer[i + offset] = str[i];
-	else
-	offset += append_hexa_code(str[i], buffer, i + offset);
-	i++;
+		if (is_printable(str[i]))
+			buffer[i + offset] = str[i];
+		else
+			offset += append_hexa_code(str[i], buffer, i + offset);
+
+		i++;
 	}
+
 	buffer[i + offset] = '\0';
+
 	return (write(1, buffer, i + offset));
 }
 
@@ -116,13 +123,15 @@ int print_reverse(va_list types, char buffer[],
 
 		str = ")Null(";
 	}
-	for (i = 0; str[i]; i++);
+	for (i = 0; str[i]; i++)
+		;
+
 	for (i = i - 1; i >= 0; i--)
 	{
-	char z = str[i];
+		char z = str[i];
 
-	write(1, &z, 1);
-	count++;
+		write(1, &z, 1);
+		count++;
 	}
 	return (count);
 }
@@ -138,7 +147,7 @@ int print_reverse(va_list types, char buffer[],
  * Return: Numbers of chars printed
  */
 int print_rot13string(va_list types, char buffer[],
-int flags, int width, int precision, int size)
+	int flags, int width, int precision, int size)
 {
 	char x;
 	char *str;
@@ -155,26 +164,41 @@ int flags, int width, int precision, int size)
 	UNUSED(size);
 
 	if (str == NULL)
-	str = "(AHYY)";
+		str = "(AHYY)";
 	for (i = 0; str[i]; i++)
 	{
-	for (j = 0; in[j]; j++)
-	{
-	if (in[j] == str[i])
-	{
-	x = out[j];
-	write(1, &x, 1);
-	count++;
-	break;
-	}
-	}
-	if (!in[j])
-	{
-	x = str[i];
-	write(1, &x, 1);
-	count++;
-	}
+		for (j = 0; in[j]; j++)
+		{
+			if (in[j] == str[i])
+			{
+				x = out[j];
+				write(1, &x, 1);
+				count++;
+				break;
+			}
+		}
+		if (!in[j])
+		{
+			x = str[i];
+			write(1, &x, 1);
+			count++;
+		}
 	}
 	return (count);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
